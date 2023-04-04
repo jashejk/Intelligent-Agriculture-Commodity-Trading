@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Intelligent Agriculture Commodity Trading Platform</title>
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/static/css/index_style.css">
+        <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+            function submitForm(value) {
+                document.getElementById('crop-name').value = value;
+                document.getElementById('crop-select-form').submit();
+            }
+
+            function homepage() {
+                window.location.href = "/";
+            }
+        </script>
+    </head>
+    <body>
+        <!--Main Navigation-->
+        <header>
+            <!-- Sidebar -->
+            <nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse bg-white">
+                <div class="position-sticky">
+                    <div class="list-group list-group-flush mx-3 mt-4">
+                        <a href="#" class="list-group-item list-group-item-action py-2 ripple" onclick="submitForm('corn'); return false;">
+                            <i class="fas fa-chart-area fa-fw me-3"></i>
+                            <span>Corn</span>
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action py-2 ripple" onclick="submitForm('oats'); return false;">
+                            <i class="fas fa-lock fa-fw me-3"></i>
+                            <span>Oats</span>
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action py-2 ripple" onclick="submitForm('soybean'); return false;">
+                            <i class="fas fa-chart-line fa-fw me-3"></i>
+                            <span>Soybean</span>
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action py-2 ripple" onclick="submitForm('cotton'); return false;">
+                            <i class="fas fa-chart-pie fa-fw me-3"></i>
+                            <span>Cotton</span>
+                        </a>
+                        <form id="crop-select-form" action="{{ url_for('crops') }}" method="post">
+                            <input id="crop-name" type="hidden" name="crop-name" value="">
+                        </form>
+                    </div>
+                </div>
+            </nav>
+            <!-- Sidebar -->
+            <!-- Navbar -->
+            <nav id="main-navbar" class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+                <!-- Container wrapper -->
+                <div class="container-fluid">
+                    <!-- Toggle button -->
+                    <a class="navbar-brand" href="#">Intelligent Agriculture Commodity Trading Platform</a>
+                    <button class="navbar-toggler" type="button" data-mdb-toggle="collapse" data-mdb-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <ul class="navbar-nav ms-auto d-flex flex-row">
+						<li class="nav-item">
+							<a class="nav-link active" aria-current="page" href="{{ url_for('crops') }}">Crops Dashboard</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link active" aria-current="page" href="{{ url_for('analysis') }}">Analysis</a>
+						</li>
+                        <li class="nav-item dropdown">
+							<li class="nav-item dropdown">
+								<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+									<img src="https://www.gravatar.com/avatar/00000000000000000000000000000000?d=robohash&f=y" class="rounded-circle" height="22" alt="Avatar" loading="lazy" />
+									{{ data["name"] }}
+								</a>
+								<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+									<li><a class="dropdown-item" href="#">Edit Profile</a></li>
+									<li><a class="dropdown-item" href="{{ url_for('signout') }}">Sign Out</a></li>
+								</ul>
+							</li>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            <!-- Navbar -->
+        </header>
+        <!--Main Navigation-->
+        <!--Main layout-->
+        <main style="margin-top: 75px; margin-left: 10px; margin-right: 10px;">
+			<div class="row row-cols-2 row-cols-md-2 g-4">
+				<div class="col">
+					<div class="card border-success mb-3">
+						<div class="card-block">
+							<div class="card-body">
+								<img src="https://media.npr.org/assets/img/2017/12/29/pfe_7708_wide-4f8a00db852451917c69413fe6d28b8102560ee9-s1600-c85.webp" class="card-img-top" alt="..." width="300" height="300">
+								<h4 class="card-title">Jimmy Red, The Forgotten Bootleggers' Corn Gets A Second ...</h4>
+								<h6 class="card-subtitle text-muted">Source: NPR</h6>
+								<h6 class="card-subtitle text-muted">Date: January 2, 2018</h6>
+								<br>
+								<p class="card-text text-success">"The corn was grown out by local farmers and bootleggers, who found that it made spectacular hooch, or moonshine whiskey. ""In the 1980s, you used to be able to..."</p>
+								<div class="card-footer">
+									<a href="https://www.npr.org/sections/thesalt/2018/01/02/574367086/from-hooch-to-haute-cuisine-a-nearly-extinct-bootleggers-corn-gets-a-second-shot" class="card-link">Source</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col">
+					<div class="card border-success mb-3">
+						<div class="card-block">
+							<div class="card-body">
+								<img src="https://www.cleveland.com/resizer/PiVhUkDEAxfWT274yyyOLgxtgGI=/1280x0/smart/image.cleveland.com/home/cleve-media/width600/img/cooking/photo/letscookjapanesefood-cornramenjpg-b1daba9956f9c576.jpg" class="card-img-top" alt="..." width="300" height="300">
+								<h4 class="card-title">Miso-Flavored Ramen Noodle Soup With Corn and Butter ...</h4>
+								<h6 class="card-subtitle text-muted">Source: Cleveland.com</h6>
+								<h6 class="card-subtitle text-muted">Date: January 10, 2018</h6>
+								<br>
+								<p class="card-text text-success">"Hot, buttered corn is always a hit in Ohio, a devotional, sweet-corn state. This time it shows up in a Japanese soup made from ramen noodles you find in..."</p>
+								<div class="card-footer">
+									<a href="https://www.npr.org/sections/thesalt/2018/01/02/574367086/from-hooch-to-haute-cuisine-a-nearly-extinct-bootleggers-corn-gets-a-second-shot" class="card-link">Source</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col">
+					<div class="card border-danger mb-3">
+						<div class="card-block">
+							<div class="card-body">
+								<img src="https://gardenerspath.com/wp-content/uploads/2020/06/Farmer-Harvesting-Fresh-Corn.jpg" class="card-img-top" alt="..." width="300" height="300">
+								<h4 class="card-title">Grain glut leaves U.S. farmers facing losses from specialty corn</h4>
+								<h6 class="card-subtitle text-muted">Source: Reuters</h6>
+								<h6 class="card-subtitle text-muted">Date: January 11, 2018</h6>
+								<br>
+								<p class="card-text text-danger">"CHICAGO (Reuters) - U.S. farmers who sought to boost revenues by planting  corn used to make tortillas may be forced to sell their crops at a loss to  makers..."</p>
+								<div class="card-footer">
+									<a href="https://www.npr.org/sections/thesalt/2018/01/02/574367086/from-hooch-to-haute-cuisine-a-nearly-extinct-bootleggers-corn-gets-a-second-shot" class="card-link">Source</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col">
+					<div class="card border-danger mb-3">
+						<div class="card-block">
+							<div class="card-body">
+								<img src="https://ocj.com/wp-content/uploads/2018/01/silo.jpg" class="card-img-top" alt="..." width="300" height="300">
+								<h4 class="card-title">Million dollar corn spill devastates New Carlisle grain elevator ...</h4>
+								<h6 class="card-subtitle text-muted">Source: Ohio's Country Journal</h6>
+								<h6 class="card-subtitle text-muted">Date: January 22, 2018</h6>
+								<br>
+								<p class="card-text text-danger">"A grain bin at Miami Valley Feed and Grain in New Carlisle collapsed Sunday evening spilling more than 21 million pounds and well over $1 million of corn..."</p>
+								<div class="card-footer">
+									<a href="https://www.npr.org/sections/thesalt/2018/01/02/574367086/from-hooch-to-haute-cuisine-a-nearly-extinct-bootleggers-corn-gets-a-second-shot" class="card-link">Source</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+        </main>
+		<!--Main layout-->
+    </body>
+</html>
