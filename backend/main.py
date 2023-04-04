@@ -76,10 +76,17 @@ def signout():
 
 @app.route("/crops", methods=["GET", "POST"])
 def crops():
+    data = dict()
     if request.method == "POST":
         print(request.form["crop-name"])
         crop = request.form["crop-name"]
-    return render_template("index.html")
+        if "email" in session:
+            data = dict()
+            data["name"] = session["name"]
+            print(data["name"])
+        else:
+            data["name"] = "Profile"
+    return render_template("index.html", data=data)
 
 
 @app.route("/analysis", methods=["POST", "GET"])
