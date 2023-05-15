@@ -1,11 +1,14 @@
 import os
 
 import bcrypt
-import pickle5 as pickle
+import pickle as pickle
 from flask import Flask, render_template, request, redirect, session, flash, url_for, jsonify
 from pymongo import MongoClient
 from datetime import datetime
 import pandas as pd
+import numpy as np
+import pickle
+from keras.models import load_model
 from flask_cors import CORS
 
 app = Flask(__name__, static_url_path="/static", static_folder="static/")
@@ -138,7 +141,22 @@ def analysis():
     return render_template("analysis.html")
 
 
+def load_modell():
+    model = load_model('models/model.h5', compile=False)
+    model.compile()
+
+    with open('models/seq.pkl', 'rb') as f:
+        seq = pickle.load(f)
+
+    realtime_pred = model.predict(seq)
+    realtime_label_pred = np.where(realtime_pred > 0.5, 1, 0)
+    df_f = pd.DataFrame(realtime_label_pred, columns=['label'])
+    mode = int(df_f['label'].mode())
+
+    print(f"mode = {mode}")
+
 if __name__ == "__main__":
+    load_modell()
 
     corn_df = pd.read_pickle("models/corn_news_rank.pkl")
     wheat_df = pd.read_pickle("models/wheat_news_rank.pkl")
