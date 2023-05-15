@@ -20,6 +20,44 @@ corn_top_news_list = None
 wheat_top_news_list = None
 oats_top_news_list = None
 sorghum_top_news_list = None
+mode = None
+
+
+def calculate_time_difference(input_datetime):
+    # Current date and time
+    current_datetime = datetime.now()
+
+    # Convert input string to datetime object
+    input_datetime = datetime.strptime(input_datetime, "%Y-%m-%d %H:%M:%S")
+
+    # Calculate the time difference
+    time_difference = current_datetime - input_datetime
+
+    # Extract the number of days and hours from the time difference
+    days_difference = time_difference.days
+    hours_difference = time_difference.seconds // 3600
+
+    # Generate the output based on the time difference
+    if days_difference == 0 and hours_difference == 0:
+        output = "Last updated just now"
+    elif days_difference == 0:
+        output = f"Last updated {hours_difference} hour{'s' if hours_difference > 1 else ''} ago"
+    elif days_difference == 1:
+        output = "Last updated 1 day ago"
+    else:
+        output = f"Last updated {days_difference} day{'s' if days_difference > 1 else ''} ago"
+
+    return output
+
+
+def update_times():
+    for corn in corn_top_news_list:
+        
+        pass
+    for wheat in wheat_top_news_list:
+        pass
+    for sorghum in sorghum_top_news_list:
+        pass
 
 
 @app.route("/", methods=["POST", "GET"])
@@ -97,21 +135,26 @@ def signin():
 def crop_select():
     crop_name = request.args.get("crop")
     response = {}
-    response["market"] = "sup"
+    response["market"] = mode
     if crop_name == "corn":
-        response["dashboardID"] = "https://public.tableau.com/views/Historicalanalysiscornprice/Sheet1?debug=false&:language=en-US&:display_count=y&:origin=viz_share_link"
+        response[
+            "dashboardID"] = "https://public.tableau.com/views/Historicalanalysiscornprice/Sheet1?debug=false&:language=en-US&:display_count=y&:origin=viz_share_link"
         response["newsArticles"] = corn_top_news_list
     elif crop_name == "wheat":
-        response["dashboardID"] = "https://public.tableau.com/views/HistoricAnalysisofWheat/Sheet1?:language=en-US&:display_count=n&:origin=viz_share_link"
+        response[
+            "dashboardID"] = "https://public.tableau.com/views/HistoricAnalysisofWheat/Sheet1?:language=en-US&:display_count=n&:origin=viz_share_link"
         response["newsArticles"] = wheat_top_news_list
     elif crop_name == "oats":
-        response["dashboardID"] = "https://public.tableau.com/views/Historicalanalysiscornprice/Sheet1?:language=en-US&:display_count=y&:origin=viz_share_link"
+        response[
+            "dashboardID"] = "https://public.tableau.com/views/Historicalanalysiscornprice/Sheet1?:language=en-US&:display_count=y&:origin=viz_share_link"
         response["newsArticles"] = corn_top_news_list
     elif crop_name == "sorghum":
-        response["dashboardID"] = "https://public.tableau.com/views/Historicalanalysiscornprice/Sheet1?:language=en-US&:display_count=y&:origin=viz_share_link"
+        response[
+            "dashboardID"] = "https://public.tableau.com/views/Historicalanalysiscornprice/Sheet1?:language=en-US&:display_count=y&:origin=viz_share_link"
         response["newsArticles"] = corn_top_news_list
     else:
-        response["dashboardID"] = "https://public.tableau.com/views/Historicalanalysiscornprice/Sheet1?:language=en-US&:display_count=y&:origin=viz_share_link"
+        response[
+            "dashboardID"] = "https://public.tableau.com/views/Historicalanalysiscornprice/Sheet1?:language=en-US&:display_count=y&:origin=viz_share_link"
         response["newsArticles"] = corn_top_news_list
 
     return jsonify(response)
@@ -154,15 +197,23 @@ def load_modell():
     mode = int(df_f['label'].mode())
 
     print(f"mode = {mode}")
+    return mode
+
 
 if __name__ == "__main__":
-    load_modell()
+    mode = load_modell()
 
-    corn_df = pd.read_pickle("models/corn_news_rank.pkl")
-    wheat_df = pd.read_pickle("models/wheat_news_rank.pkl")
+    corn_df = pd.read_pickle("models/newscatcher_extract_corn.pickle")
+    wheat_df = pd.read_pickle("models/newscatcher_extract_wheat.pickle")
+    sorghum_df = pd.read_pickle('models/newscatcher_extract_sorghum.pickle')
 
     corn_top_news_list = corn_df.to_dict("records")
+
+    for news in corn_top_news_list:
+        print(news["published_date"])
+
     wheat_top_news_list = wheat_df.to_dict("records")
+    sorghum_top_news_list = sorghum_df.to_dict("records")
 
     app.secret_key = os.urandom(24)
     app.run(host="0.0.0.0", port=8080, debug=True)
