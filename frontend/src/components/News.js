@@ -18,7 +18,7 @@ class News extends React.Component {
                 <Card.Text>{article.body}</Card.Text>
               </Card.Body>
               <Card.Footer>
-                <small className="text-muted">{market}</small>
+                <small className="text-muted">{article.time}</small>
               </Card.Footer>
             </Card>
           </a>

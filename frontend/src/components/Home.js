@@ -6,7 +6,7 @@ import { Container, Row, Col, Card } from 'react-bootstrap';
 import Tableau from "tableau-react";
 import styles from './App.css';
 
-class App extends React.Component {
+class Home extends React.Component {
   state = {
     selectedCrop: '',
     dashboardID: 'https://public.tableau.com/views/Historicalanalysiscornprice/Sheet1?:language=en-US&:display_count=y&:origin=viz_share_link',
@@ -117,4 +117,4 @@ class App extends React.Component {
   }
 }
 
-export default App;
+export default Home;

@@ -1,20 +1,23 @@
 import os
 
-import bcrypt
+from flask_bcrypt import Bcrypt
 import pickle as pickle
 from flask import Flask, render_template, request, redirect, session, flash, url_for, jsonify
 from pymongo import MongoClient
-from datetime import datetime
+from datetime import datetime, timedelta
 import pandas as pd
 import numpy as np
 import pickle
-from keras.models import load_model
+import jwt
+import re
+from tensorflow.keras.models import load_model
 from flask_cors import CORS
 
 app = Flask(__name__, static_url_path="/static", static_folder="static/")
 client = MongoClient("mongodb+srv://298a:admin298a@298a.kqrtzfx.mongodb.net/?retryWrites=true&w=majority")
 db = client["298a"]
 cors = CORS(app, origins="*")
+bcrypt = Bcrypt(app)
 
 corn_top_news_list = None
 wheat_top_news_list = None
@@ -50,85 +53,101 @@ def calculate_time_difference(input_datetime):
     return output
 
 
+def is_valid_email(email):
+    pattern = r'^[\w\.-]+@[\w\.-]+\.\w+$'
+    return re.match(pattern, email) is not None
+
+
+def is_valid_input(**kwargs):
+    email = kwargs.get("email")
+    if email is not None and not is_valid_email(email):
+        return False
+
+    for arg_name, arg_value in kwargs.items():
+        if arg_value is None:
+            return False
+
+    return True
+
+
 def update_times():
-    for corn in corn_top_news_list:
-        
-        pass
-    for wheat in wheat_top_news_list:
-        pass
-    for sorghum in sorghum_top_news_list:
+    i = 0
+    for i in range(len(corn_top_news_list)):
+        published_date = corn_top_news_list[i]["published_date"]
+        corn_top_news_list[i]["time"] = calculate_time_difference(published_date)
         pass
 
+    i = 0
+    for i in range(len(wheat_top_news_list)):
+        published_date = wheat_top_news_list[i]["published_date"]
+        wheat_top_news_list[i]["time"] = calculate_time_difference(published_date)
+        pass
 
-@app.route("/", methods=["POST", "GET"])
-def index():
-    return redirect("/dashboard")
-
-
-@app.route("/dashboard", methods=["POST", "GET"])
-def dashboard():
-    if "email" in session:
-        data = dict()
-        data["name"] = session["name"]
-        print(data["name"])
-        corn_df = pd.read_pickle("models/corn_news_rank.pkl")
-        wheat_df = pd.read_pickle("models/wheat_news_rank.pkl")
-
-        corn_top_news_list = corn_df.to_dict("records")
-        wheat_top_news_list = wheat_df.to_dict("records")
-
-        print(corn_top_news_list[0]["media"])
-
-        return render_template("index.html", data=data, corn_top_news_list=corn_top_news_list,
-                               wheat_top_news_list=wheat_top_news_list)
-    return redirect("/signin")
+    i = 0
+    for i in range(len(sorghum_top_news_list)):
+        published_date = sorghum_top_news_list[i]["published_date"]
+        sorghum_top_news_list[i]["time"] = calculate_time_difference(published_date)
+        pass
 
 
-@app.route("/signup", methods=["POST", "GET"])
+@app.route("/api/signup", methods=["POST"])
 def signup():
-    if request.method == "POST":
-        name = request.form["name"]
-        email = request.form["email"]
-        password = request.form["password"]
-        users = db["users"]
+    users = db["users"]
+    name = request.json['name']
+    email = request.json['email']
+    password = bcrypt.generate_password_hash(request.json['password']).decode('utf-8')
 
-        if users.find_one({"email": email}):
-            print("Email already taken")
-            flash("Email already taken", "signup")
-            return render_template("auth.html")
+    if not is_valid_input(name=name, email=email, password=password):
+        return jsonify({"error": "Invalid input"}), 400
 
-        hashed_pwd = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
-        user_id = users.insert_one({"email": email, "password": hashed_pwd, "name": name}).inserted_id
-        print("used_id", user_id)
-        return redirect("/signin")
-
-    return render_template("auth.html")
+    user_id = users.insert_one({'name': name, 'email': email, 'password': password}).inserted_id
+    token = jwt.encode({'user': email, 'exp': datetime.utcnow() + timedelta(minutes=30)},
+                       app.secret_key)
+    return jsonify({'token': token})
 
 
-@app.route("/signin", methods=["POST", "GET"])
+@app.route("/api/signin", methods=["POST"])
 def signin():
     if request.method == "POST":
-        email = request.form["email"]
-        password = request.form["password"]
+        email = request.json["email"]
+        password = request.json["password"]
+
+        if not is_valid_input(email=email, password=password):
+            return jsonify({"error": "Invalid input"}), 400
+
         users = db["users"]
-        user = users.find_one({"email": email})
 
-        if not user:
-            print("Email invalid")
-            flash("Email invalid", "signin")
-            return render_template("auth.html")
+        response = users.find_one({'email': email})
 
-        if not bcrypt.checkpw(password.encode("utf-8"), user["password"]):
-            print("Password invalid")
-            flash("Password invalid", "signin")
-            return render_template("auth.html")
+        if response:
+            if bcrypt.check_password_hash(response['password'], password):
+                access_token = jwt.encode(
+                    {'user': email, 'exp': datetime.utcnow() + timedelta(minutes=30)}, app.secret_key)
+                result = jsonify({"token": access_token})
+            else:
+                result = jsonify({"error": "Invalid username and password"})
+        else:
+            result = jsonify({"result": "No results found"})
+        return result
 
-        print("Valid email and pwd")
-        session["email"] = email
-        session["name"] = user["name"]
-        return redirect("/")
 
-    return render_template("auth.html")
+@app.route('/api/validateToken', methods=['GET'])
+def validate_token():
+    auth_header = request.headers.get('Authorization')
+
+    if not auth_header:
+        return jsonify({'message': 'No authorization header provided'}), 401
+
+    try:
+        # remove 'Bearer ' from the token
+        token = auth_header.split(' ')[1]
+
+        # decode the token
+        data = jwt.decode(token, app.secret_key, algorithms=["HS256"])
+        return jsonify({'status': 'valid'}), 200
+
+    except Exception as e:
+        return jsonify({'message': str(e)}), 401
 
 
 @app.route("/api/crops/", methods=["GET"])
@@ -150,8 +169,8 @@ def crop_select():
         response["newsArticles"] = corn_top_news_list
     elif crop_name == "sorghum":
         response[
-            "dashboardID"] = "https://public.tableau.com/views/Historicalanalysiscornprice/Sheet1?:language=en-US&:display_count=y&:origin=viz_share_link"
-        response["newsArticles"] = corn_top_news_list
+            "dashboardID"] = "https://public.tableau.com/views/HistoricalAnalysisofSoybeanprice/Sheet1?:language=en-US&:display_count=n&:origin=viz_share_link"
+        response["newsArticles"] = sorghum_top_news_list
     else:
         response[
             "dashboardID"] = "https://public.tableau.com/views/Historicalanalysiscornprice/Sheet1?:language=en-US&:display_count=y&:origin=viz_share_link"
@@ -208,12 +227,10 @@ if __name__ == "__main__":
     sorghum_df = pd.read_pickle('models/newscatcher_extract_sorghum.pickle')
 
     corn_top_news_list = corn_df.to_dict("records")
-
-    for news in corn_top_news_list:
-        print(news["published_date"])
-
     wheat_top_news_list = wheat_df.to_dict("records")
     sorghum_top_news_list = sorghum_df.to_dict("records")
 
-    app.secret_key = os.urandom(24)
+    update_times()
+
+    app.secret_key = "ejk"
     app.run(host="0.0.0.0", port=8080, debug=True)
