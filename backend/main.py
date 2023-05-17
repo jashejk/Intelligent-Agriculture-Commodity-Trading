@@ -89,6 +89,12 @@ def update_times():
         sorghum_top_news_list[i]["time"] = calculate_time_difference(published_date)
         pass
 
+    i = 0
+    for i in range(len(oats_top_news_list)):
+        published_date = oats_top_news_list[i]["published_date"]
+        oats_top_news_list[i]["time"] = calculate_time_difference(published_date)
+        pass
+
 
 @app.route("/api/signup", methods=["POST"])
 def signup():
@@ -155,22 +161,32 @@ def crop_select():
     crop_name = request.args.get("crop")
     response = {}
     response["market"] = mode
+
+    if crop_name == "corn" or crop_name == "wheat":
+        response["market"] = 0
+
+    print("market = ", mode)
+    print(type(response["market"]))
     if crop_name == "corn":
         response[
             "dashboardID"] = "https://public.tableau.com/views/Historicalanalysiscornprice/Sheet1?debug=false&:language=en-US&:display_count=y&:origin=viz_share_link"
         response["newsArticles"] = corn_top_news_list
+        # response["market"] = 0
     elif crop_name == "wheat":
         response[
             "dashboardID"] = "https://public.tableau.com/views/HistoricAnalysisofWheat/Sheet1?:language=en-US&:display_count=n&:origin=viz_share_link"
         response["newsArticles"] = wheat_top_news_list
+        # response["market"] = 0
     elif crop_name == "oats":
         response[
             "dashboardID"] = "https://public.tableau.com/views/OatHistoricalAnalysis/Sheet1?:language=en-US&publish=yes&:display_count=n&:origin=viz_share_link"
         response["newsArticles"] = oats_top_news_list
+        # response["market"] = 1
     elif crop_name == "sorghum":
         response[
             "dashboardID"] = "https://public.tableau.com/views/HistoricalAnalysisofSoybeanprice/Sheet1?:language=en-US&:display_count=n&:origin=viz_share_link"
         response["newsArticles"] = sorghum_top_news_list
+        # response["market"] = 1
     else:
         response[
             "dashboardID"] = "https://public.tableau.com/views/Historicalanalysiscornprice/Sheet1?:language=en-US&:display_count=y&:origin=viz_share_link"
