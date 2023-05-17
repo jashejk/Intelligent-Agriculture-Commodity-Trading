@@ -165,7 +165,7 @@ def crop_select():
         response["newsArticles"] = wheat_top_news_list
     elif crop_name == "oats":
         response[
-            "dashboardID"] = "https://public.tableau.com/views/Historicalanalysiscornprice/Sheet1?:language=en-US&:display_count=y&:origin=viz_share_link"
+            "dashboardID"] = "https://public.tableau.com/views/OatHistoricalAnalysis/Sheet1?:language=en-US&publish=yes&:display_count=n&:origin=viz_share_link"
         response["newsArticles"] = corn_top_news_list
     elif crop_name == "sorghum":
         response[

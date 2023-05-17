@@ -108,7 +108,6 @@ class App extends React.Component {
                   <News articles={this.state.newsArticles} market={this.state.market} />
                 </div>
               </Col>
-
             </Row>
           </Container>
         </main>
