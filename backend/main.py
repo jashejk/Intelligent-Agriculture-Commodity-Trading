@@ -243,7 +243,7 @@ if __name__ == "__main__":
     corn_df = pd.read_pickle("models/corn.pickle")
     wheat_df = pd.read_pickle("models/wheat.pickle")
     sorghum_df = pd.read_pickle('models/sorghum.pickle')
-    oat_df = pd.read_pickle('models/sorghum.pickle')
+    oat_df = pd.read_pickle('models/oat.pickle')
 
     corn_top_news_list = corn_df.to_dict("records")
     wheat_top_news_list = wheat_df.to_dict("records")
