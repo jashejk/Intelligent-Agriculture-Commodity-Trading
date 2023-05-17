@@ -96,10 +96,10 @@ class App extends React.Component {
               </Col>
               <Col md={3}>
                 {this.state.market && (
-                  <Card style={{ marginBottom: '20px', backgroundColor: this.state.market === 1 ? 'rgb(10, 200, 10)' : 'rgb(255, 50, 10)' }}>
+                  <Card style={{ marginBottom: '20px', backgroundColor: this.state.market === "up" ? 'rgb(10, 200, 10)' : 'rgb(255, 50, 10)' }}>
                     <Card.Body>
                       <Card.Text>
-                        {this.state.market === 1 ? 'Market will be up tomorrow' : 'Market will be down tomorrow'}
+                        {this.state.market === "up" ? 'Market will be up tomorrow' : 'Market will be down tomorrow'}
                       </Card.Text>
                     </Card.Body>
                   </Card>

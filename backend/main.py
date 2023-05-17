@@ -163,7 +163,9 @@ def crop_select():
     response["market"] = mode
 
     if crop_name == "corn" or crop_name == "wheat":
-        response["market"] = 0
+        response["market"] = "down"
+    else:
+        response["market"] = "up"
 
     print("market = ", mode)
     print(type(response["market"]))
