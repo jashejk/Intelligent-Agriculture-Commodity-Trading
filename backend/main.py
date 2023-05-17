@@ -166,7 +166,7 @@ def crop_select():
     elif crop_name == "oats":
         response[
             "dashboardID"] = "https://public.tableau.com/views/OatHistoricalAnalysis/Sheet1?:language=en-US&publish=yes&:display_count=n&:origin=viz_share_link"
-        response["newsArticles"] = corn_top_news_list
+        response["newsArticles"] = oats_top_news_list
     elif crop_name == "sorghum":
         response[
             "dashboardID"] = "https://public.tableau.com/views/HistoricalAnalysisofSoybeanprice/Sheet1?:language=en-US&:display_count=n&:origin=viz_share_link"
@@ -222,13 +222,15 @@ def load_modell():
 if __name__ == "__main__":
     mode = load_modell()
 
-    corn_df = pd.read_pickle("models/newscatcher_extract_corn.pickle")
-    wheat_df = pd.read_pickle("models/newscatcher_extract_wheat.pickle")
-    sorghum_df = pd.read_pickle('models/newscatcher_extract_sorghum.pickle')
+    corn_df = pd.read_pickle("models/corn.pickle")
+    wheat_df = pd.read_pickle("models/wheat.pickle")
+    sorghum_df = pd.read_pickle('models/sorghum.pickle')
+    oat_df = pd.read_pickle('models/sorghum.pickle')
 
     corn_top_news_list = corn_df.to_dict("records")
     wheat_top_news_list = wheat_df.to_dict("records")
     sorghum_top_news_list = sorghum_df.to_dict("records")
+    oats_top_news_list = oat_df.to_dict("records")
 
     update_times()
 
