@@ -6,7 +6,7 @@ import axios from 'axios';
 class CropSelection extends React.Component {
   state = {
     value: 0,
-    crops: ['corn', 'wheat', 'oats', 'sorghum']
+    crops: ['Corn', 'Wheat', 'Oats', 'Sorghum']
   }
 
   handleChange = async (event, newValue) => {

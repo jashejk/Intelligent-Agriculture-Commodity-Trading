@@ -96,10 +96,29 @@ class App extends React.Component {
               </Col>
               <Col md={3}>
                 {this.state.market && (
-                  <Card style={{ marginBottom: '20px', backgroundColor: this.state.market === "up" ? 'rgb(10, 200, 10)' : 'rgb(255, 50, 10)' }}>
+                  <Card className="news-flash-card" style={{ marginBottom: '20px' }}>
+                    <Card.Body className="news-flash-body">
+                      <Card.Text className="news-flash-text">
+                        Market Analysis
+                      </Card.Text>
+                    </Card.Body>
+                  </Card>
+                )}
+                
+                {this.state.market && (
+                  <Card style={{ marginBottom: '20px' }}>
                     <Card.Body>
                       <Card.Text>
-                        {this.state.market === "up" ? 'Market will be up tomorrow' : 'Market will be down tomorrow'}
+                        {this.state.market === "up" ? this.state.selectedCrop + ' market will be up tomorrow' : this.state.selectedCrop + ' market will be down tomorrow'}
+                      </Card.Text>
+                    </Card.Body>
+                  </Card>
+                )}
+                {this.state.market && (
+                  <Card className="news-flash-card" style={{ marginBottom: '20px' }}>
+                    <Card.Body className="news-flash-body">
+                      <Card.Text className="news-flash-text">
+                        Top news articles of {this.state.selectedCrop}
                       </Card.Text>
                     </Card.Body>
                   </Card>

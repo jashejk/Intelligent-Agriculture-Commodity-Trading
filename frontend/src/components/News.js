@@ -4,7 +4,7 @@ import styles from './News.module.css';
 
 class News extends React.Component {
   render() {
-    const { articles, market } = this.props;
+    const { articles } = this.props;
     return (
       <div className={styles.container}>
         {articles.map((article, index) => (
@@ -19,6 +19,9 @@ class News extends React.Component {
               </Card.Body>
               <Card.Footer>
                 <small className="text-muted">{article.time}</small>
+              </Card.Footer>
+              <Card.Footer>
+                <span className="text-muted">Rank {index + 1}</span>
               </Card.Footer>
             </Card>
           </a>

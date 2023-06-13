@@ -1,10 +1,9 @@
-import React, { Component, createRef } from 'react';
+import React, {  } from 'react';
 import Header from './Header';
 import CropSelection from './CropSelection';
 import News from './News';
 import { Container, Row, Col, Card } from 'react-bootstrap';
 import Tableau from "tableau-react";
-import styles from './App.css';
 
 class Home extends React.Component {
   state = {
@@ -99,11 +98,18 @@ class Home extends React.Component {
                   <Card style={{ marginBottom: '20px', backgroundColor: this.state.market === 1 ? 'rgb(10, 200, 10)' : 'rgb(255, 50, 10)' }}>
                     <Card.Body>
                       <Card.Text>
-                        {this.state.market === 1 ? 'Market will be up tomorrow' : 'Market will be down tomorrow'}
+                        {this.state.market === 1 ? 'Market will be up tomorroww' : 'Market will be down tomorroww'}
                       </Card.Text>
                     </Card.Body>
                   </Card>
                 )}
+                <Card>
+                  <Card.Body>
+                    <Card.Text>
+                      hello
+                    </Card.Text>
+                  </Card.Body>
+                </Card>
                 <div className="scrollable-div" ref={this.scrollableDivRef}>
                   <News articles={this.state.newsArticles} market={this.state.market} />
                 </div>

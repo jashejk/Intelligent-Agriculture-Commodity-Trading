@@ -162,29 +162,29 @@ def crop_select():
     response = {}
     response["market"] = mode
 
-    if crop_name == "corn" or crop_name == "wheat":
+    if crop_name == "Corn" or crop_name == "Wheat":
         response["market"] = "down"
     else:
         response["market"] = "up"
 
     print("market = ", mode)
     print(type(response["market"]))
-    if crop_name == "corn":
+    if crop_name == "Corn":
         response[
             "dashboardID"] = "https://public.tableau.com/views/Historicalanalysiscornprice/Sheet1?debug=false&:language=en-US&:display_count=y&:origin=viz_share_link"
         response["newsArticles"] = corn_top_news_list
         # response["market"] = 0
-    elif crop_name == "wheat":
+    elif crop_name == "Wheat":
         response[
             "dashboardID"] = "https://public.tableau.com/views/HistoricAnalysisofWheat/Sheet1?:language=en-US&:display_count=n&:origin=viz_share_link"
         response["newsArticles"] = wheat_top_news_list
         # response["market"] = 0
-    elif crop_name == "oats":
+    elif crop_name == "Oats":
         response[
             "dashboardID"] = "https://public.tableau.com/views/OatHistoricalAnalysis/Sheet1?:language=en-US&publish=yes&:display_count=n&:origin=viz_share_link"
         response["newsArticles"] = oats_top_news_list
         # response["market"] = 1
-    elif crop_name == "sorghum":
+    elif crop_name == "Sorghum":
         response[
             "dashboardID"] = "https://public.tableau.com/views/HistoricalAnalysisofSoybeanprice/Sheet1?:language=en-US&:display_count=n&:origin=viz_share_link"
         response["newsArticles"] = sorghum_top_news_list
